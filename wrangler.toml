@@ -25,23 +25,5 @@ queue = "monitoring"
 binding = "PUBLISH_QUEUE"
 queue = "publishing"
 
-[[queues.consumers]]
-queue = "content-generation"
-max_batch_size = 5
-
-[[queues.consumers]]
-queue = "monitoring"
-max_batch_size = 10
-
-[[queues.consumers]]
-queue = "publishing"
-max_batch_size = 3
-
-[triggers]
-crons = [
-  "0 3 * * 1",    # 毎週月曜 3:00 UTC - モニタリング
-  "0 4 1,15 * *"  # 月2回 - コンテンツ鮮度チェック
-]
-
 [vars]
 ENVIRONMENT = "production"
