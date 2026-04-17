@@ -4,7 +4,7 @@ import { fetchSERP, checkAIOverview } from '@/lib/serper';
 
 export async function POST(request: Request) {
   try {
-    const { companyName, businessDescription, website, targetKeywords } = await request.json();
+    const { companyName, businessDescription, website, targetKeywords } = await request.json() as any;
 
     const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 

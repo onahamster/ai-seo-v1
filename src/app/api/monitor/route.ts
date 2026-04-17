@@ -7,7 +7,7 @@ async function checkPerplexity(query: string) {
   const response = await fetch("https://api.perplexity.ai/chat/completions", {
     method: "POST",
     headers: {
-      Authorization: \`Bearer \${process.env.PERPLEXITY_API_KEY}\`,
+      Authorization: `Bearer ${process.env.PERPLEXITY_API_KEY}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
@@ -15,7 +15,7 @@ async function checkPerplexity(query: string) {
       messages: [{ role: "user", content: query }],
     }),
   });
-  const data = await response.json();
+  const data = await response.json() as any;
   return {
     platform: "perplexity",
     query,
@@ -35,7 +35,7 @@ async function checkAIOverview(query: string) {
     },
     body: JSON.stringify({ q: query, gl: "jp", hl: "ja" }),
   });
-  const data = await res.json();
+  const data = await res.json() as any;
   return {
     platform: "google_aio",
     query,
@@ -50,12 +50,12 @@ async function analyzeMention(responseText: string, companyName: string) {
     model: "gemini-2.0-flash", // Flash is sufficient for classification
   });
 
-  const prompt = \`
+  const prompt = `
 Analyze the following AI response text:
 
-"""\${responseText}"""
+"""${responseText}"""
 
-Target Company: \${companyName}
+Target Company: ${companyName}
 
 Respond in JSON ONLY:
 {
@@ -63,11 +63,11 @@ Respond in JSON ONLY:
   "mention_position": 1-10 (0 if not mentioned),
   "mention_context": "context string",
   "sentiment": "positive/neutral/negative"
-}\`;
+}`;
   
   try {
     const result = await model.generateContent(prompt);
-    const text = result.response.text().replace(/\`\`\`json\\n?|\`\`\`/g, "").trim();
+    const text = result.response.text().replace(/```json\n?|```/g, "").trim();
     return JSON.parse(text);
   } catch (e) {
     return { brand_mentioned: false, sentiment: "neutral", mention_position: 0 };
@@ -76,13 +76,13 @@ Respond in JSON ONLY:
 
 export async function POST(request: Request) {
   try {
-    const { campaignId, keywords, companyName } = await request.json();
+    const { campaignId, keywords, companyName } = await request.json() as any;
 
     const allResults = [];
 
     // Loop keywords and queries and platforms
     for (const kw of keywords.slice(0, 5)) { // Limit to 5 for safety
-      const query = \`\${kw} おすすめ企業は？\`;
+      const query = `${kw} おすすめ企業は？`;
 
       const [perplexity, aio] = await Promise.all([
         checkPerplexity(query).catch(() => null),

@@ -3,7 +3,7 @@ import { generateAllSchemas } from '@/lib/schema-generator';
 
 export async function POST(request: Request) {
   try {
-    const { article, company, pageUrl } = await request.json();
+    const { article, company, pageUrl } = await request.json() as any;
 
     if (!article || !company || !pageUrl) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });

@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 
 export async function POST(request: Request) {
   try {
-    const { article, publishConfig } = await request.json();
+    const { article, publishConfig } = await request.json() as any;
 
     const results: any = {};
 
@@ -10,12 +10,12 @@ export async function POST(request: Request) {
       // Mocked Implementation for WordPress REST API publish
       const wpConfig = publishConfig.wordpress;
       
-      const auth = btoa(\`\${wpConfig.username}:\${wpConfig.applicationPassword}\`);
+      const auth = btoa(`${wpConfig.username}:${wpConfig.applicationPassword}`);
       
-      const response = await fetch(\`\${wpConfig.url}/wp-json/wp/v2/posts\`, {
+      const response = await fetch(`${wpConfig.url}/wp-json/wp/v2/posts`, {
         method: "POST",
         headers: {
-          Authorization: \`Basic \${auth}\`,
+          Authorization: `Basic ${auth}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
@@ -32,10 +32,10 @@ export async function POST(request: Request) {
       });
 
       if (!response.ok) {
-        throw new Error(\`WordPress API Error: \${response.statusText}\`);
+        throw new Error(`WordPress API Error: ${response.statusText}`);
       }
 
-      const result = await response.json();
+      const result = await response.json() as any;
       results.blog = {
         published_url: result.link,
         post_id: result.id,

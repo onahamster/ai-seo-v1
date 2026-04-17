@@ -33,14 +33,14 @@ export default {
 
     if (trigger === "0 4 1,15 * *") {
       // 1st and 15th of month at 4:00 UTC - Content Refresh Policy
-      const staleArticles = await env.DB.prepare(\`
+      const staleArticles = await env.DB.prepare(`
         SELECT a.*, c.name as company_name
         FROM articles a
         JOIN campaigns ca ON a.campaign_id = ca.id
         JOIN companies c ON ca.company_id = c.id
         WHERE a.status = 'published'
         AND a.updated_at < datetime('now', '-14 days')
-      \`).all();
+      `).all();
 
       for (const article of staleArticles.results) {
         await env.CONTENT_QUEUE.send({

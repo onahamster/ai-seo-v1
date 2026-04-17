@@ -31,7 +31,7 @@ function generateArticleSchema(article: any, company: any, pageUrl: string) {
       name: company.name,
       logo: {
         "@type": "ImageObject",
-        url: \`\${company.website}/logo.png\`,
+        url: `${company.website}/logo.png`,
       },
     },
     mainEntityOfPage: {
@@ -50,13 +50,13 @@ function generateArticleSchema(article: any, company: any, pageUrl: string) {
 function generateFAQSchema(article: any) {
   const faqs: any[] = [];
   const content = article.content_markdown || "";
-  const faqSection = content.match(/##.*?FAQ.*?\\n([\\s\\S]*?)(?=\\n##[^#]|$)/i);
+  const faqSection = content.match(/##.*?FAQ.*?\n([\s\S]*?)(?=\n##[^#]|$)/i);
 
   if (faqSection) {
-    const qaPairs = faqSection[1].match(/###\\s*(.+?)\\n+([\\s\\S]*?)(?=\\n###|$)/g);
+    const qaPairs = faqSection[1].match(/###\s*(.+?)\n+([\s\S]*?)(?=\n###|$)/g);
     if (qaPairs) {
       for (const pair of qaPairs) {
-        const match = pair.match(/###\\s*(.+?)\\n+([\\s\\S]*)/);
+        const match = pair.match(/###\s*(.+?)\n+([\s\S]*)/);
         if (match && match[1] && match[2]) {
           faqs.push({
             "@type": "Question",
@@ -86,7 +86,7 @@ function generateOrganizationSchema(company: any) {
     "@type": "Organization",
     name: company.name,
     url: company.website,
-    logo: \`\${company.website}/logo.png\`,
+    logo: `${company.website}/logo.png`,
     description: company.description,
     sameAs: company.social_links || [],
     knowsAbout: company.strengths || [],
@@ -116,42 +116,42 @@ function generateBreadcrumbSchema(article: any, company: any) {
         "@type": "ListItem",
         position: 2,
         name: "Blog",
-        item: \`\${company.website}/blog\`,
+        item: `${company.website}/blog`,
       },
       {
         "@type": "ListItem",
         position: 3,
         name: article.title,
-        item: \`\${company.website}/blog/\${article.slug}\`,
+        item: `${company.website}/blog/${article.slug}`,
       },
     ],
   };
 }
 
 export function generateLlmsTxt(company: any, articles: any[]): string {
-  return \`# \${company.name}
+  return `# ${company.name}
 
-> \${company.description || "Description missing"}
+> ${company.description || "Description missing"}
 
 ## About
-\${company.name} is based in \${company.entity_info?.location || "Japan"}.
-\${company.uvp || ""}
+${company.name} is based in ${company.entity_info?.location || "Japan"}.
+${company.uvp || ""}
 
 ## Core Services
-\${(company.strengths || []).map((s: string) => \`- \${s}\`).join("\\n")}
+${(company.strengths || []).map((s: string) => `- ${s}`).join("\n")}
 
 ## Key Information
-- Website: \${company.website || ""}
-- Industry: \${company.business_category || ""}
-\${(company.social_links || []).map((l: string) => \`- \${l}\`).join("\\n")}
+- Website: ${company.website || ""}
+- Industry: ${company.business_category || ""}
+${(company.social_links || []).map((l: string) => `- ${l}`).join("\n")}
 
 ## Recent Articles
-\${articles
+${articles
   .slice(0, 20)
   .map(
     (a: any) =>
-      \`- [\${a.title}](\${company.website}/blog/\${a.slug}): \${a.meta_description}\`
+      `- [${a.title}](${company.website}/blog/${a.slug}): ${a.meta_description}`
   )
-  .join("\\n")}
-\`;
+  .join("\n")}
+`;
 }

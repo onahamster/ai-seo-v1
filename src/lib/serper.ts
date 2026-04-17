@@ -32,7 +32,7 @@ export async function checkAIOverview(query: string) {
   });
   if (!res.ok) throw new Error("Failed to fetch AI Overview data");
   
-  const data = await res.json();
+  const data = await res.json() as any;
   return {
     hasAIOverview: !!data.aiOverview,
     aiOverviewText: data.aiOverview?.text || null,

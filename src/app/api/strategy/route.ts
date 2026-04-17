@@ -3,7 +3,7 @@ import { genAI, parseGeminiJson } from '@/lib/gemini';
 
 export async function POST(request: Request) {
   try {
-    const { researchData, companyName, companyDescription } = await request.json();
+    const { researchData, companyName, companyDescription } = await request.json() as any;
 
     const model = genAI.getGenerativeModel({
       model: "gemini-2.5-flash",
