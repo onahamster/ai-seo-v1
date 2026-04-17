@@ -1,0 +1,47 @@
+name = "llmo-tool"
+compatibility_date = "2026-04-01"
+compatibility_flags = ["nodejs_compat"]
+pages_build_output_dir = ".vercel/output"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "llmo-db"
+database_id = "will-be-created-later"
+
+[[r2_buckets]]
+binding = "STORAGE"
+bucket_name = "llmo-content"
+
+[queues]
+[[queues.producers]]
+binding = "CONTENT_QUEUE"
+queue = "content-generation"
+
+[[queues.producers]]
+binding = "MONITOR_QUEUE"
+queue = "monitoring"
+
+[[queues.producers]]
+binding = "PUBLISH_QUEUE"
+queue = "publishing"
+
+[[queues.consumers]]
+queue = "content-generation"
+max_batch_size = 5
+
+[[queues.consumers]]
+queue = "monitoring"
+max_batch_size = 10
+
+[[queues.consumers]]
+queue = "publishing"
+max_batch_size = 3
+
+[triggers]
+crons = [
+  "0 3 * * 1",    # 毎週月曜 3:00 UTC - モニタリング
+  "0 4 1,15 * *"  # 月2回 - コンテンツ鮮度チェック
+]
+
+[vars]
+ENVIRONMENT = "production"
