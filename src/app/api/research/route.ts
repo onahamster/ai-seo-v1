@@ -1,4 +1,4 @@
-export const runtime = 'edge';
+
 import { NextResponse } from 'next/server';
 import { genAI, parseGeminiJson } from '@/lib/gemini';
 import { fetchSERP, checkAIOverview } from '@/lib/serper';
